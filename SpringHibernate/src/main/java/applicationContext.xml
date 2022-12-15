@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+               http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+               http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd">
+           
+     <tx:annotation-driven /> 
+
+	<bean id="ds" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName"
+			value="com.mysql.cj.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mysql://localhost:3306/mydb2" />
+		<property name="username" value="root" />
+		<property name="password" value="Root" />
+	</bean>
+	
+	<bean id="sessionFactory1"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="ds" />
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.hbm2ddl.auto">update</prop>  
+	              
+			</props>
+		</property>
+		
+		 <property  name="annotatedClasses" >
+		<list>
+		  <value>
+		      com.springorm.entity.Department
+		   </value>
+	
+		</list>
+	
+		</property>
+
+	</bean>
+
+	<bean id="template"
+		class="org.springframework.orm.hibernate5.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory1"></property>
+	</bean>
+
+	<bean id="dptdao" class="com.springorm.DepartmentImpl.DepartmentDaoImpl">
+		<property name="ht" ref="template"></property>
+	</bean>
+	
+	  <bean  name="transactionManager"  class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+	     <property name="sessionFactory" ref="sessionFactory1" />
+	</bean>  
+
+</beans>
